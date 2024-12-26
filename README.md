@@ -1,6 +1,9 @@
 # 🌐⛓️ blockmesh-network-bot-rb
 A Ruby bot for automating interactions with the Blockmesh Network, utilizing proxies (SOCKS5, HTTP/S) to enhance uptime and earning potential.
 
+> [!WARNING]
+> I am not responsible for any loss or damage caused by this bot. Use it at your own risk.
+> 
 # 🦾 Bot Features
 - Direct Connection
 - Connection Through Proxy (support socks/5 http/s)
