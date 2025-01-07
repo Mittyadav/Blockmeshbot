@@ -33,7 +33,7 @@ def coder_mark
     ╱╱╱╱╱╱╱╱╱╱╱┃┃╱╱╱╱╱╱╱╱╱╱╱╭━╯┃
     ╱╱╱╱╱╱╱╱╱╱╱╰╯╱╱╱╱╱╱╱╱╱╱╱╰━━╯
     #{GREEN}--------------------------------------
-    #{YELLOW}[+]#{AM} BlockMesh Network Bot #{RESET}#{UL}v0.1#{RESET}
+    #{YELLOW}[+]#{AM} BlockMesh Network Bot #{RESET}#{UL}v0.1.1#{RESET}
     #{GREEN}--------------------------------------
     #{YELLOW}[+]#{BLUE} https://github.com/cmalf/
     #{GREEN}--------------------------------------#{RESET}
@@ -195,14 +195,15 @@ def format_proxy(proxy_string)
   end
 end
 
+# Update authenticate method
 def authenticate(proxy)
-  
   if $proxy_tokens.key?(proxy)
     return $proxy_tokens[proxy]
   end
 
   proxy_config = format_proxy(proxy)
-  ip_info = get_ip_info(proxy_config[:http].split('@').last.split(':').first)
+  proxy_uri = URI(proxy_config[:http])
+  ip_info = get_ip_info(proxy_uri.host)
 
   login_endpoint = "https://api.blockmesh.xyz/api/get_token"
   login_headers = {
@@ -216,18 +217,27 @@ def authenticate(proxy)
 
   begin
     uri = URI(login_endpoint)
-    response = Net::HTTP.post(uri, login_data.to_json, login_headers)
+    http = Net::HTTP.new(uri.host, uri.port, proxy_uri.host, proxy_uri.port, proxy_uri.user, proxy_uri.password)
+    http.use_ssl = true
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    
+    request = Net::HTTP::Post.new(uri)
+    login_headers.each { |k, v| request[k] = v }
+    request.body = login_data.to_json
+    
+    response = http.request(request)
     raise "HTTP Error" unless response.is_a?(Net::HTTPSuccess)
+    
     auth_data = JSON.parse(response.body)
     api_token = auth_data['api_token']
 
     $proxy_tokens[proxy] = api_token
     save_credentials($email_input, api_token, $password_input)
 
-    puts "[#{Time.now.strftime('%H:%M:%S')}]" + " #{'Login successful'.green} | #{proxy.blue} | "
+    puts "[#{Time.now.strftime('%H:%M:%S')}] #{'Login successful'.green} | #{proxy.blue}"
     api_token
   rescue => e
-    puts "[#{Time.now.strftime('%H:%M:%S')}]" + " Login failed | #{proxy} : #{e}".red
+    puts "[#{Time.now.strftime('%H:%M:%S')}] Login failed | #{proxy} : #{e}".red
     nil
   end
 end
