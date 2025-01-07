@@ -45,6 +45,32 @@ $email_input = nil
 $api_token = nil
 $password_input = nil
 
+# adding handle_proxy_error
+def handle_proxy_error(proxy, error_message)
+  if error_message.include?('end of file reached')
+    proxy_file = 'proxy.txt'
+    error_file = 'proxy_error.txt'
+    
+    # Read current proxies
+    proxies = File.exist?(proxy_file) ? File.readlines(proxy_file).map(&:chomp) : []
+    
+    # Remove the failed proxy from the list
+    proxies.delete(proxy)
+    
+    # Write remaining proxies back to proxy.txt
+    File.write(proxy_file, proxies.join("\n"))
+    
+    # Append failed proxy to proxy_error.txt
+    File.open(error_file, 'a') do |f|
+      f.puts "#{proxy} | Error: #{error_message} | #{Time.now.strftime('%Y-%m-%d %H:%M:%S')}"
+    end
+    
+    puts "[#{Time.now.strftime('%H:%M:%S')}] Proxy removed due to EOF error: #{proxy}".red
+    return true
+  end
+  false
+end
+
 # Speed and metrics generation methods
 def generate_download_speed
   rand(0.0..10.0).round(16)
@@ -195,7 +221,7 @@ def format_proxy(proxy_string)
   end
 end
 
-# Update authenticate method
+# Modified authenticate method to include error handling
 def authenticate(proxy)
   if $proxy_tokens.key?(proxy)
     return $proxy_tokens[proxy]
@@ -237,7 +263,13 @@ def authenticate(proxy)
     puts "[#{Time.now.strftime('%H:%M:%S')}] #{'Login successful'.green} | #{proxy.blue}"
     api_token
   rescue => e
-    puts "[#{Time.now.strftime('%H:%M:%S')}] Login failed | #{proxy} : #{e}".red
+    error_message = e.message
+    puts "[#{Time.now.strftime('%H:%M:%S')}] Login failed | #{proxy} : #{error_message}".red
+    
+    if handle_proxy_error(proxy, error_message)
+      Thread.current.exit # Exit the current thread if proxy is removed
+    end
+    
     nil
   end
 end
