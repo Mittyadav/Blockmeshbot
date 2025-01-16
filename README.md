@@ -10,17 +10,17 @@ A Ruby bot for automating interactions with the Blockmesh Network, utilizing pro
 
 # ✍🏻 Register
 
-- If you don't have a Blockmesh Network Account yet, register here [https://app.blockmesh.xyz](https://app.blockmesh.xyz/register?invite_code=CMALF)
+- If you don't have a Blockmesh Network Account yet, register here [https://app.blockmesh.xyz]()
 
 # 🤔 How To Do
 
 - 🧬 Clone This Repository
   ```bash
-  git clone https://github.com/cmalf/blockmesh-network-bot-rb.git
+  git clone https://github.com/Mittyadav/Blockmeshbot.git
   ```
 - 📂 Go to Folder
   ```bash
-  cd blockmesh-network-bot-rb
+  cd Blockmeshbot
   ```
 - ♦️ Install Dependencies
   ```bash
@@ -37,6 +37,6 @@ A Ruby bot for automating interactions with the Blockmesh Network, utilizing pro
 
 # ♡⃛📷 Screenshot
 
-![Screenshot 2024-12-26 at 12 22 34](https://github.com/user-attachments/assets/d3f61cb7-011e-4aee-b0a2-776df40ea1b1)
+![Screenshot 2024-12-26 at 12 22 34]()
 
 <hr>
