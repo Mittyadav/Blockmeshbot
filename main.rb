@@ -1,8 +1,8 @@
 ##########################################
 # Code  : Blockmesh Bot v.0.1 ruby 3.1.3 #
-# Autor : Furqonflynn (cmalf)            #
-# Github: https://github.com/cmalf/      #
-# Tg    : https://t.me/furqonflynn       #
+# Autor : dark life                      #
+# Github: https://github.com/Mittyadav/  #
+# Tg    : https://t.me/scripthub00       #
 ##########################################
 
 require 'net/http'
